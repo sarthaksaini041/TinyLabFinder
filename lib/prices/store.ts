@@ -39,3 +39,13 @@ export async function historyFor(slug: string, market: MarketplaceId, days = 180
   );
   return r.rows.map((x) => ({ day: x.day, minPrice: Number(x.min_price), currency: x.currency }));
 }
+
+/** Latest snapshot for every model on one marketplace (one query, for listing pages). */
+export async function latestAll(market: MarketplaceId): Promise<PriceSnapshot[]> {
+  if (!dbConfigured()) return [];
+  const r = await query<Row>(
+    `select distinct on (model_slug) * from price_snapshots where marketplace = $1 order by model_slug, observed_at desc`,
+    [market],
+  );
+  return r.rows.map(toSnap);
+}

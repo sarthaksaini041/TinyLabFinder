@@ -14,7 +14,7 @@ export function PriceBox({ slug }: { slug: string }) {
   const [err, setErr] = useState(false);
   useEffect(() => {
     let live = true;
-    fetch(`/api/prices/${slug}`).then((r) => (r.ok ? r.json() : Promise.reject(r.status))).then((j) => live && setD(j)).catch(() => live && setErr(true));
+    fetch(`/api/prices/${slug}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))).then((j) => live && setD(j)).catch(() => live && setErr(true));
     return () => { live = false; };
   }, [slug]);
 

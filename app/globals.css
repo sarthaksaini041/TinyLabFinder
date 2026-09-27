@@ -542,3 +542,5 @@ select option { background: var(--card); color: var(--ink); }
 .quiz__jump { position: sticky; top: 64px; z-index: 5; margin: 0; }
 .quiz__jump a { display: inline-block; background: var(--ink); color: var(--paper); padding: 6px 12px; border-radius: 999px; text-decoration: none; font-weight: 600; }
 @media (min-width: 900px) { .quiz__jump { display: none; } }
+.card__price { margin: 6px 0 2px; }
+.card__price strong { color: var(--accent); }

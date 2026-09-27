@@ -82,6 +82,10 @@ export function Finder({ items }: { items: ModelView[] }) {
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const compare = useCompare();
+  const [prices, setPrices] = useState<Record<string, { min: number; median: number; currency: string; n: number }>>({});
+  useEffect(() => {
+    fetch("/api/prices").then((r) => (r.ok ? r.json() : null)).then((j) => j?.prices && setPrices(j.prices)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     setF(fromQuery(new URLSearchParams(window.location.search)));
@@ -194,6 +198,12 @@ export function Finder({ items }: { items: ModelView[] }) {
                     <span className="muted small">{m.released} · {m.chipset ?? m.family}</span>
                   </div>
                   <span className="verdict small"><span className={`dot dot--${m.verdict}`} aria-hidden="true" />{VERDICT_TEXT[m.verdict]}</span>
+                  {prices[m.slug] && (
+                    <p className="card__price">
+                      <strong>From {new Intl.NumberFormat("en", { style: "currency", currency: prices[m.slug].currency, maximumFractionDigits: 0 }).format(prices[m.slug].min)}</strong>
+                      <span className="muted small"> used on eBay · median {new Intl.NumberFormat("en", { style: "currency", currency: prices[m.slug].currency, maximumFractionDigits: 0 }).format(prices[m.slug].median)} ({prices[m.slug].n} listings)</span>
+                    </p>
+                  )}
                   <dl className="kv">
                     <div><dt>CPUs</dt><dd>{m.cpuList.map((c) => c.name.replace(/^(Core|Ryzen \d PRO) /, "")).join(", ")}</dd></div>
                     <div><dt>NVMe / 2.5&quot;</dt><dd>{m.storage.m2Nvme} / {m.storage.sata25}</dd></div>
