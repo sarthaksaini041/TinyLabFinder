@@ -169,3 +169,11 @@ test("in-memory limiter", () => {
   assert.equal(memLimited("k", 3, 1000, t), true);
   assert.equal(memLimited("k", 3, 1000, t + 1001), false);
 });
+
+test("eBay photo URLs: only eBay CDN, resized to 500px", async () => {
+  const { isEbayImage, sizedEbayImage } = await import("../lib/prices/ebay");
+  assert.ok(isEbayImage("https://i.ebayimg.com/images/g/abc/s-l225.jpg"));
+  assert.ok(!isEbayImage("http://i.ebayimg.com/x.jpg"));
+  assert.ok(!isEbayImage("https://evil.example/i.ebayimg.com/x.jpg"));
+  assert.equal(sizedEbayImage("https://i.ebayimg.com/images/g/abc/s-l225.jpg"), "https://i.ebayimg.com/images/g/abc/s-l500.jpg");
+});

@@ -47,17 +47,30 @@ export const ebayProvider: PriceProvider = {
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     if (!res.ok) throw new Error(`eBay search failed: ${res.status}`);
-    const j = (await res.json()) as { itemSummaries?: Array<{ title: string; price?: { value: string; currency: string } }> };
-    const prices = (j.itemSummaries || [])
+    type Item = { title: string; price?: { value: string; currency: string }; image?: { imageUrl?: string }; itemWebUrl?: string };
+    const j = (await res.json()) as { itemSummaries?: Item[] };
+    const units = (j.itemSummaries || [])
       .filter((i) => i.price && i.price.currency === currency && !NOT_A_UNIT.test(i.title))
-      .map((i) => Number(i.price!.value))
-      .filter((p) => Number.isFinite(p) && p > 0);
-    const clean = withoutOutliers(prices);
+      .map((i) => ({ price: Number(i.price!.value), image: i.image?.imageUrl ?? null, url: i.itemWebUrl ?? null }))
+      .filter((i) => Number.isFinite(i.price) && i.price > 0);
+    const clean = withoutOutliers(units.map((u) => u.price));
     if (clean.length < 3) return null; // too few listings to say anything honest
+    const med = median(clean);
+    // A typical unit (priced near the median) makes a more representative photo than the cheapest one.
+    const photo = units
+      .filter((u) => u.image && isEbayImage(u.image) && clean.includes(u.price))
+      .sort((a, b) => Math.abs(a.price - med) - Math.abs(b.price - med))[0];
     return {
       modelSlug, marketplace: market, currency,
-      minPrice: round2(Math.min(...clean)), medianPrice: round2(median(clean)), sampleSize: clean.length,
+      minPrice: round2(Math.min(...clean)), medianPrice: round2(med), sampleSize: clean.length,
       observedAt: new Date().toISOString(), source: "ebay-browse",
+      imageUrl: photo ? sizedEbayImage(photo.image!) : null, imageListingUrl: photo?.url ?? null,
     };
   },
 };
+
+/** Only eBay's own image CDN over https is accepted (it is also the only host the page allows). */
+export const isEbayImage = (u: string) => /^https:\/\/i\.ebayimg\.com\//.test(u);
+
+/** eBay image URLs carry their size as s-l<N>; ask for a 500px version for sharp cards. */
+export const sizedEbayImage = (u: string) => u.replace(/\/s-l\d+\./, "/s-l500.");

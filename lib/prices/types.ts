@@ -13,6 +13,9 @@ export interface PriceSnapshot {
   sampleSize: number;
   observedAt: string; // ISO timestamp
   source: "ebay-browse";
+  /** Photo of a representative listing (the one priced closest to the median), shown with a link to it. */
+  imageUrl?: string | null;
+  imageListingUrl?: string | null;
 }
 
 /**

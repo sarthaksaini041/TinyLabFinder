@@ -3,7 +3,7 @@ import { clientIp } from "../../../lib/auth/rate";
 import { memLimited } from "../../../lib/memlimit";
 import { reportError } from "../../../lib/monitoring";
 import { PRICE_FRESH_HOURS, priceMarkets, priceStatus } from "../../../lib/prices/config";
-import { latestAll } from "../../../lib/prices/store";
+import { latestAll, latestImages } from "../../../lib/prices/store";
 
 // Compact "currently from" summary for every model, used by the finder cards.
 export async function GET(req: Request) {
@@ -11,18 +11,21 @@ export async function GET(req: Request) {
   const market = priceMarkets()[0];
   const freshAfter = Date.now() - PRICE_FRESH_HOURS * 3600_000;
   let prices: Record<string, { min: number; median: number; currency: string; n: number; at: string }> = {};
+  let images: Awaited<ReturnType<typeof latestImages>> = {};
   let degraded = false;
   try {
     for (const s of await latestAll(market)) {
       if (Date.parse(s.observedAt) > freshAfter) prices[s.modelSlug] = { min: s.minPrice, median: s.medianPrice, currency: s.currency, n: s.sampleSize, at: s.observedAt };
     }
+    images = await latestImages();
   } catch (e) {
     degraded = true;
     prices = {};
+    images = {};
     reportError(e, { where: "api/prices(all)" });
   }
   return NextResponse.json(
-    { status: priceStatus(), degraded, market, prices },
+    { status: priceStatus(), degraded, market, prices, images },
     { headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=3600" } },
   );
 }

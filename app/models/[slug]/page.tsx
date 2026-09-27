@@ -16,6 +16,7 @@ import { AffiliateDisclosure } from "../../../components/AffiliateDisclosure";
 import { BuildList } from "../../../components/model/BuildList";
 import { PriceBox } from "../../../components/model/PriceBox";
 import { SaveButton } from "../../../components/model/SaveButton";
+import { ModelHeroPhoto } from "../../../components/model/ModelHeroPhoto";
 import { measuredIdle } from "../../../lib/catalog";
 import { modelFaqs } from "../../../lib/faq";
 
@@ -71,6 +72,9 @@ export default async function ModelPage({ params }: Props) {
       <Breadcrumbs items={[{ name: "Models", href: "/#main" }, { name: m.shortName, href: `/models/${m.slug}` }]} />
       <div className="layout layout--side">
         <article>
+          <div className="model-hero">
+            <ModelHeroPhoto slug={m.slug} name={m.name} />
+            <div>
           <h1>{m.name}</h1>
           <p className="lede">
             A {m.released} {m.family} {m.chipset ? `on the ${m.chipset} chipset ` : ""}with {m.storage.m2Nvme} M.2 NVMe{" "}
@@ -87,6 +91,8 @@ export default async function ModelPage({ params }: Props) {
               <span className="badge badge--check">Verify specs before buying</span>
             )}
           </p>
+            </div>
+          </div>
           {m.confidence === "check" && (
             <p className="notice small">
               We could not confirm every field on this page from an official {m.brand} document. Treat slot counts and

@@ -67,6 +67,8 @@ create table if not exists price_snapshots (
   observed_at timestamptz not null default now(),
   source text not null default 'ebay-browse'
 );
+alter table price_snapshots add column if not exists image_url text;
+alter table price_snapshots add column if not exists image_listing_url text;
 create index if not exists price_snapshots_model_idx on price_snapshots (model_slug, marketplace, observed_at desc);
 
 -- Saved models (watchlist) per account.

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ModelView } from "../lib/catalog";
 import { VERDICT_TEXT } from "../lib/media";
 import { track } from "./analytics/track";
+import { ModelPhoto } from "./ModelPhoto";
 import { DropdownSelect } from "./DropdownSelect";
 import { useCompare } from "./useCompare";
 
@@ -83,8 +84,12 @@ export function Finder({ items }: { items: ModelView[] }) {
   const [hydrated, setHydrated] = useState(false);
   const compare = useCompare();
   const [prices, setPrices] = useState<Record<string, { min: number; median: number; currency: string; n: number }>>({});
+  const [images, setImages] = useState<Record<string, { imageUrl: string; listingUrl: string | null }>>({});
   useEffect(() => {
-    fetch("/api/prices").then((r) => (r.ok ? r.json() : null)).then((j) => j?.prices && setPrices(j.prices)).catch(() => {});
+    fetch("/api/prices").then((r) => (r.ok ? r.json() : null)).then((j) => {
+      if (j?.prices) setPrices(j.prices);
+      if (j?.images) setImages(j.images);
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -193,6 +198,9 @@ export function Finder({ items }: { items: ModelView[] }) {
               const inCompare = compare.list.includes(m.slug);
               return (
                 <li key={m.slug} className="card">
+                  <Link href={`/models/${m.slug}`} className="card__photo" tabIndex={-1} aria-hidden="true">
+                    <ModelPhoto name={m.name} image={images[m.slug]?.imageUrl} />
+                  </Link>
                   <div className="card__top">
                     <h2 className="card__title"><Link href={`/models/${m.slug}`}>{m.name}</Link></h2>
                     <span className="muted small">{m.released} · {m.chipset ?? m.family}</span>
