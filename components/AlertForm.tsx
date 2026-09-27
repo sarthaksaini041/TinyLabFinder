@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import { MARKETPLACES, type MarketplaceId } from "../lib/listings";
 import { track } from "./analytics/track";
 import { errorsFrom, postJson } from "./auth/api";
+import { DropdownSelect } from "./DropdownSelect";
 
 interface Option { slug: string; name: string }
 
@@ -55,18 +56,32 @@ export function AlertForm({ models, email }: { models: Option[]; email: string }
     <form onSubmit={onSubmit} noValidate className="panel">
       <div className="field">
         <label htmlFor="modelSlug">Model</label>
-        <select id="modelSlug" name="modelSlug" defaultValue={preset} aria-invalid={!!errors.modelSlug} aria-describedby={errors.modelSlug ? "e-model" : undefined}>
-          <option value="">Choose a model…</option>
-          {models.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}
-        </select>
+        <DropdownSelect
+          id="modelSlug"
+          name="modelSlug"
+          defaultValue={preset}
+          placeholder="Choose a model…"
+          options={[
+            { value: "", label: "Choose a model…" },
+            ...models.map((m) => ({ value: m.slug, label: m.name })),
+          ]}
+          ariaInvalid={!!errors.modelSlug}
+          ariaDescribedBy={errors.modelSlug ? "e-model" : undefined}
+        />
         {errors.modelSlug && <p className="field-error" id="e-model">{errors.modelSlug}</p>}
       </div>
       <div className="two-col">
         <div className="field">
           <label htmlFor="marketplace">Marketplace</label>
-          <select id="marketplace" name="marketplace" defaultValue="EBAY_US">
-            {(Object.keys(MARKETPLACES) as MarketplaceId[]).map((id) => <option key={id} value={id}>{MARKETPLACES[id].label} ({MARKETPLACES[id].currency})</option>)}
-          </select>
+          <DropdownSelect
+            id="marketplace"
+            name="marketplace"
+            defaultValue="EBAY_US"
+            options={(Object.keys(MARKETPLACES) as MarketplaceId[]).map((id) => ({
+              value: id,
+              label: `${MARKETPLACES[id].label} (${MARKETPLACES[id].currency})`,
+            }))}
+          />
         </div>
         <div className="field">
           <label htmlFor="maxPrice">Maximum price</label>

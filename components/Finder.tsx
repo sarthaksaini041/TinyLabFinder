@@ -5,9 +5,17 @@ import { useEffect, useMemo, useState } from "react";
 import type { ModelView } from "../lib/catalog";
 import { VERDICT_TEXT } from "../lib/media";
 import { track } from "./analytics/track";
+import { DropdownSelect } from "./DropdownSelect";
 import { useCompare } from "./useCompare";
 
 type Sort = "newest" | "oldest" | "threads" | "drives";
+
+const SORT_OPTIONS: { value: Sort; label: string }[] = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest (cheapest) first" },
+  { value: "threads", label: "Most CPU threads" },
+  { value: "drives", label: "Most drive bays" },
+];
 interface Filters {
   brands: string[];
   twoNvme: boolean;
@@ -156,15 +164,17 @@ export function Finder({ items }: { items: ModelView[] }) {
           <p className="muted" role="status" aria-live="polite" style={{ margin: 0 }}>
             {results.length} of {items.length} models
           </p>
-          <label className="small sort">
-            Sort
-            <select value={f.sort} onChange={(e) => update({ sort: e.target.value as Sort }, "sort")}>
-              <option value="newest">Newest first</option>
-              <option value="oldest">Oldest (cheapest) first</option>
-              <option value="threads">Most CPU threads</option>
-              <option value="drives">Most drive bays</option>
-            </select>
-          </label>
+          <div className="sort-control">
+            <span className="sort-label" id="sort-label">Sort</span>
+            <DropdownSelect<Sort>
+              id="sort-select"
+              ariaLabelledBy="sort-label"
+              value={f.sort}
+              onChange={(next) => update({ sort: next }, "sort")}
+              options={SORT_OPTIONS}
+              size="small"
+            />
+          </div>
         </div>
 
         {results.length === 0 ? (

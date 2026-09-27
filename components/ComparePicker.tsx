@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import type { ModelView } from "../lib/catalog";
 import { track } from "./analytics/track";
 import { CompareTable } from "./CompareTable";
+import { DropdownSelect } from "./DropdownSelect";
 
 const MAX = 3;
 
@@ -32,21 +33,25 @@ export function ComparePicker({ items }: { items: ModelView[] }) {
         {Array.from({ length: MAX }).map((_, i) => (
           <div className="field" key={i}>
             <label htmlFor={`cmp-${i}`}>Model {i + 1}</label>
-            <select
+            <DropdownSelect
               id={`cmp-${i}`}
               value={slugs[i] || ""}
-              onChange={(e) => {
+              placeholder={i < 2 ? "Choose a model…" : "(optional)"}
+              options={[
+                { value: "", label: i < 2 ? "Choose a model…" : "(optional)" },
+                ...items.map((m) => ({
+                  value: m.slug,
+                  label: m.name,
+                  disabled: slugs.includes(m.slug) && slugs[i] !== m.slug,
+                })),
+              ]}
+              onChange={(val) => {
                 const next = [...slugs];
-                if (e.target.value) next[i] = e.target.value;
+                if (val) next[i] = val;
                 else next.splice(i, 1);
                 setSlugs([...new Set(next.filter(Boolean))]);
               }}
-            >
-              <option value="">{i < 2 ? "Choose a model…" : "(optional)"}</option>
-              {items.map((m) => (
-                <option key={m.slug} value={m.slug} disabled={slugs.includes(m.slug) && slugs[i] !== m.slug}>{m.name}</option>
-              ))}
-            </select>
+            />
           </div>
         ))}
       </div>
