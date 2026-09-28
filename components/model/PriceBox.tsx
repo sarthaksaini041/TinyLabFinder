@@ -9,7 +9,9 @@ type Resp = { status: "ACTIVE" | "PENDING_CREDENTIALS" | "DISABLED"; degraded: b
 const money = (v: number, c: string) => new Intl.NumberFormat("en", { style: "currency", currency: c, maximumFractionDigits: 0 }).format(v);
 
 /** Live asking prices from the price sync. Shows an honest empty state when there is no data. */
-export function PriceBox({ slug }: { slug: string }) {
+type Initial = { min: number; median: number; currency: string; n: number; at: string } | null;
+
+export function PriceBox({ slug, initial }: { slug: string; initial?: Initial }) {
   const [d, setD] = useState<Resp | null>(null);
   const [err, setErr] = useState(false);
   useEffect(() => {
@@ -18,8 +20,20 @@ export function PriceBox({ slug }: { slug: string }) {
     return () => { live = false; };
   }, [slug]);
 
+  // Until the client refresh arrives, show the server-rendered price (no loading flash, no layout shift).
+  if (!d && initial) {
+    return (
+      <div className="panel price-box">
+        <p style={{ margin: "0 0 4px" }}>
+          <strong>Currently from {money(initial.min, initial.currency)}</strong> on eBay US{" "}
+          <span className="small muted">(median {money(initial.median, initial.currency)} across {initial.n} used listings, checked {new Date(initial.at).toLocaleDateString()})</span>
+        </p>
+        <p className="small muted" style={{ margin: "4px 0 0" }}>Asking prices of active fixed-price listings; configuration (CPU, RAM, SSD) varies.</p>
+      </div>
+    );
+  }
   if (err) return <p className="notice small">Prices are unavailable right now. The marketplace search links below still work.</p>;
-  if (!d) return <p className="muted small" aria-busy="true">Checking prices…</p>;
+  if (!d) return <div className="panel price-box" aria-busy="true"><p className="muted small" style={{ margin: 0 }}>Checking current eBay prices…</p></div>;
   const fresh = d.latest.filter((l) => l.fresh);
   if (!fresh.length) {
     return (

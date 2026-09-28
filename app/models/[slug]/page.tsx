@@ -16,7 +16,8 @@ import { AffiliateDisclosure } from "../../../components/AffiliateDisclosure";
 import { BuildList } from "../../../components/model/BuildList";
 import { PriceBox } from "../../../components/model/PriceBox";
 import { SaveButton } from "../../../components/model/SaveButton";
-import { ModelHeroPhoto } from "../../../components/model/ModelHeroPhoto";
+import { ModelPhoto } from "../../../components/ModelPhoto";
+import { getModelMarket } from "../../../lib/prices/server";
 import { measuredIdle } from "../../../lib/catalog";
 import { modelFaqs } from "../../../lib/faq";
 
@@ -26,17 +27,20 @@ export function generateStaticParams() {
   return CATALOG.map((m) => ({ slug: m.slug }));
 }
 export const dynamicParams = false;
+// Re-render every 6 hours so the photo and price in the HTML follow the daily eBay sync.
+export const revalidate = 21600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const m = getView((await params).slug);
   if (!m) return {};
-  const title = `${m.shortName} specs: max RAM, NVMe slots, PCIe & Quick Sync`;
+  const { image } = await getModelMarket(m.slug);
+  const title = `${m.shortName} specs, used price & upgrades: RAM, NVMe, PCIe`;
   const description = `${m.name}: ${m.storage.m2Nvme}× M.2 NVMe + ${m.storage.sata25}× 2.5" SATA, ${m.ram.maxOfficialGB} GB official max RAM, ${m.pcieSlot === "none" ? "no PCIe slot" : "PCIe expansion"}. ${VERDICT_TEXT[m.verdict]}. What to check before buying one used.`;
   return {
     title,
     description,
     alternates: { canonical: `/models/${m.slug}` },
-    openGraph: { title, description, url: `/models/${m.slug}`, images: ["/opengraph-image"] },
+    openGraph: { title, description, url: `/models/${m.slug}`, images: image ? [{ url: image.imageUrl, alt: `${m.name}` }, "/opengraph-image"] : ["/opengraph-image"] },
     twitter: { card: "summary_large_image", title, description },
   };
 }
@@ -50,6 +54,8 @@ export default async function ModelPage({ params }: Props) {
   const faqs = modelFaqs(m);
   const guides = GUIDES.filter((g) => g.models?.(m));
   const power = m.power ?? [];
+  const { price, image } = await getModelMarket(m.slug);
+  const money = (v: number, c: string) => new Intl.NumberFormat("en-US", { style: "currency", currency: c, maximumFractionDigits: 0 }).format(v);
   const families = m.cpuList.map((c) => c.igpuFamily);
   const ld = [
     {
@@ -60,6 +66,16 @@ export default async function ModelPage({ params }: Props) {
       dateModified: SITE.dataUpdated,
       about: { "@type": "Thing", name: m.name, manufacturer: { "@type": "Organization", name: m.brand } },
     },
+    ...(price ? [{
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: m.name,
+      brand: { "@type": "Brand", name: m.brand },
+      category: "Mini PC / small form factor desktop",
+      description: `${m.name}: ${m.storage.m2Nvme}× M.2 NVMe, ${m.storage.sata25}× 2.5" SATA, up to ${m.ram.maxOfficialGB} GB ${m.ram.type} (official).`,
+      ...(image ? { image: [image.imageUrl] } : {}),
+      offers: { "@type": "AggregateOffer", priceCurrency: price.currency, lowPrice: price.min, offerCount: price.n, availability: "https://schema.org/InStock", itemCondition: "https://schema.org/UsedCondition" },
+    }] : []),
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -73,7 +89,7 @@ export default async function ModelPage({ params }: Props) {
       <div className="layout layout--side">
         <article>
           <div className="model-hero">
-            <ModelHeroPhoto slug={m.slug} name={m.name} />
+            <ModelPhoto name={m.name} image={image?.imageUrl} listingUrl={image?.listingUrl} size="hero" priority />
             <div>
           <h1>{m.name}</h1>
           <p className="lede">
@@ -102,7 +118,14 @@ export default async function ModelPage({ params }: Props) {
           )}
 
           <h2>Used price</h2>
-          <PriceBox slug={m.slug} />
+          <PriceBox slug={m.slug} initial={price} />
+          {price && (
+            <p className="prose small muted" style={{ marginTop: 0 }}>
+              Used {m.shortName} units on eBay US currently start at {money(price.min, price.currency)}, and the typical asking price is about{" "}
+              {money(price.median, price.currency)} across {price.n} fixed-price listings. The spread mostly reflects the CPU fitted
+              ({m.cpuList.map((c) => c.name.replace("Core ", "")).join(", ")}), RAM and SSD included, and whether a power adapter is in the box.
+            </p>
+          )}
 
           <h2>Specifications</h2>
           <SpecSheet m={m} />

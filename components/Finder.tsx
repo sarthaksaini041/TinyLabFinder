@@ -78,19 +78,23 @@ export function applyFilters(items: ModelView[], f: Filters): ModelView[] {
   return out.sort(by[f.sort]);
 }
 
-export function Finder({ items }: { items: ModelView[] }) {
+type Price = { min: number; median: number; currency: string; n: number };
+type Img = { imageUrl: string; listingUrl: string | null };
+
+export function Finder({ items, initialPrices = {}, initialImages = {} }: { items: ModelView[]; initialPrices?: Record<string, Price>; initialImages?: Record<string, Img> }) {
   const [f, setF] = useState<Filters>(DEFAULTS);
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const compare = useCompare();
-  const [prices, setPrices] = useState<Record<string, { min: number; median: number; currency: string; n: number }>>({});
-  const [images, setImages] = useState<Record<string, { imageUrl: string; listingUrl: string | null }>>({});
+  const [prices, setPrices] = useState<Record<string, Price>>(initialPrices);
+  const [images, setImages] = useState<Record<string, Img>>(initialImages);
   useEffect(() => {
+    if (Object.keys(initialPrices).length) return; // server already rendered fresh data
     fetch("/api/prices").then((r) => (r.ok ? r.json() : null)).then((j) => {
       if (j?.prices) setPrices(j.prices);
       if (j?.images) setImages(j.images);
     }).catch(() => {});
-  }, []);
+  }, [initialPrices]);
 
   useEffect(() => {
     setF(fromQuery(new URLSearchParams(window.location.search)));
@@ -197,7 +201,7 @@ export function Finder({ items }: { items: ModelView[] }) {
             {results.map((m) => {
               const inCompare = compare.list.includes(m.slug);
               return (
-                <li key={m.slug} className="card">
+                <li key={m.slug} className="card card--photo">
                   <Link href={`/models/${m.slug}`} className="card__photo" tabIndex={-1} aria-hidden="true">
                     <ModelPhoto name={m.name} image={images[m.slug]?.imageUrl} />
                   </Link>

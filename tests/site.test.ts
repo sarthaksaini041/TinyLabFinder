@@ -68,8 +68,8 @@ test("guides: unique slugs, internal links resolve", () => {
   }
 });
 
-test("sitemap lists every public page once", () => {
-  const urls = sitemap().map((e) => e.url);
+test("sitemap lists every public page once", async () => {
+  const urls = (await sitemap()).map((e) => e.url);
   assert.equal(new Set(urls).size, urls.length, "duplicate sitemap entries");
   for (const u of PUBLISHED_USE_CASES) assert.ok(urls.some((x) => x.endsWith(`/best/${u.slug}`)), u.slug);
   for (const c of COMPARISONS) assert.ok(urls.some((x) => x.endsWith(`/compare/${c.slug}`)), c.slug);

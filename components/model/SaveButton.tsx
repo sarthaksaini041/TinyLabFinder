@@ -12,7 +12,8 @@ export function SaveButton({ slug }: { slug: string }) {
     }).catch(() => setState("error"));
   }, [slug]);
 
-  if (state === "loading" || state === "error") return null;
+  if (state === "error") return null;
+  if (state === "loading") return <span className="btn" aria-hidden="true" style={{ visibility: "hidden" }}>☆ Save model</span>;
   if (state === "anon") return <Link className="btn" href={`/login?next=/models/${slug}`}>☆ Log in to save</Link>;
   const saved = state === "saved";
   return (

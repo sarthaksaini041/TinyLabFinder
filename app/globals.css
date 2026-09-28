@@ -514,7 +514,7 @@ select option { background: var(--card); color: var(--ink); }
 }
 
 /* ---- Prices, build list, FAQ, chips, quiz ---- */
-.price-box { margin-bottom: 8px; }
+.price-box { margin-bottom: 8px; min-height: 96px; }
 .price-chart { margin: 12px 0 0; }
 .price-chart svg { width: 100%; height: auto; display: block; }
 .price-chart__axis { stroke: var(--rule); stroke-width: 1; }
@@ -548,7 +548,7 @@ select option { background: var(--card); color: var(--ink); }
 /* ---- Model photos ---- */
 .model-photo { margin: 0; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
 .model-photo img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.model-photo--card { aspect-ratio: 4 / 3; margin-bottom: 10px; }
+.model-photo--card { aspect-ratio: 4 / 3; }
 .model-photo--hero { aspect-ratio: 4 / 3; width: 100%; flex-direction: column; }
 .model-photo--hero img { flex: 1; min-height: 0; }
 .model-photo--hero figcaption { padding: 6px 10px; background: var(--card); width: 100%; border-top: 1px solid var(--rule); }
@@ -557,9 +557,31 @@ select option { background: var(--card); color: var(--ink); }
 .model-hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px 24px; align-items: start; margin-bottom: 8px; }
 @media (min-width: 700px) { .model-hero { grid-template-columns: 280px minmax(0, 1fr); } .model-hero h1 { margin-top: 0; } }
 @media (max-width: 699px) { .model-photo--hero { max-width: 420px; } }
+
+/* Finder cards with a photo: photo column on the left. */
+.card--photo { grid-template-columns: 96px minmax(0, 1fr); column-gap: 14px; align-items: start; }
+.card--photo > * { grid-column: 2; }
+.card--photo > .card__photo { grid-column: 1; grid-row: 1 / span 3; }
+.card--photo > .kv, .card--photo > .btn-row { grid-column: 1 / -1; }
+@media (min-width: 640px) {
+  .card--photo { grid-template-columns: 168px minmax(0, 1fr); column-gap: 18px; }
+  .card--photo > .card__photo { grid-row: 1 / span 6; }
+  .card--photo > .kv, .card--photo > .btn-row { grid-column: 2; }
+}
+.card__photo .model-photo { border-radius: calc(var(--radius) - 1px); }
+
+/* ---- Mobile polish: side-by-side card buttons, calmer type scale ---- */
 @media (max-width: 599px) {
-  .card__photo { float: right; width: 104px; margin: 0 0 6px 12px; }
-  .card__photo .model-photo--card { margin: 0; }
-  .card__photo .model-photo--empty svg { width: 56px; height: 28px; }
-  .card .btn-row { clear: both; }
+  .card .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .card .btn-row .btn { min-height: 40px; padding: 0 8px; font-size: .88rem; white-space: nowrap; }
+  .card__title { font-size: 1rem; line-height: 1.25; }
+  .card__top .muted { font-size: .8rem; }
+  .card .verdict { font-size: .82rem; line-height: 1.3; }
+  .card__price { font-size: .95rem; line-height: 1.35; }
+  .card__price .small { font-size: .8rem; }
+  .kv dt { font-size: .68rem; }
+  .kv dd { font-size: .82rem; }
+  .lede { font-size: 1rem; line-height: 1.55; }
+  h1 { line-height: 1.15; }
+  h2 { font-size: 1.18rem; }
 }

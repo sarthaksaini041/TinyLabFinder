@@ -3,9 +3,13 @@ import { AdSlot } from "../components/ads/AdSlot";
 import { Finder } from "../components/Finder";
 import { CATALOG } from "../lib/catalog";
 import { PUBLISHED_USE_CASES } from "../data/usecases";
+import { getAllMarket } from "../lib/prices/server";
+
+export const revalidate = 21600;
 import { SITE, absoluteUrl } from "../lib/site";
 
-export default function Home() {
+export default async function Home() {
+  const market = await getAllMarket();
   const ld = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -26,7 +30,7 @@ export default function Home() {
         <Link className="btn btn--primary" href="/which-mini-pc">Not sure? Take the 6-question quiz</Link>
         <Link className="btn" href="/best">Best picks by use case</Link>
       </p>
-      <Finder items={CATALOG} />
+      <Finder items={CATALOG} initialPrices={market.prices} initialImages={market.images} />
       <AdSlot placement="below-results" />
       <section className="prose">
         <h2>How to read this data</h2>
