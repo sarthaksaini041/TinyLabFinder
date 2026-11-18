@@ -14,6 +14,7 @@ const UPDATED = "2026-09-25";
 export const NEW_GUIDES: Guide[] = [
   {
     slug: "do-mini-pcs-support-64gb-ram",
+    category: "upgrades",
     title: "Do Lenovo Tiny, OptiPlex Micro and EliteDesk Mini PCs support 64 GB of RAM?",
     description: "Official RAM limits for every used ThinkCentre Tiny, OptiPlex Micro and EliteDesk Mini in our database, which ones are officially 64 GB, and what owners report about running 64 GB on 32 GB-rated models.",
     updated: UPDATED,
@@ -52,6 +53,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "mini-pc-10gbe-network-card",
+    category: "upgrades",
     title: "Which used mini PCs can take a 10GbE network card?",
     description: "How to add 10 Gigabit (or 2.5GbE) networking to a used 1-litre PC: which Lenovo Tiny models take a PCIe card via a riser, what else to buy, heat and card-height limits, and the alternatives.",
     updated: UPDATED,
@@ -93,6 +95,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "mini-pc-power-consumption",
+    category: "buying",
     title: "Mini PC power consumption for a 24/7 home server: how to measure and reduce it",
     description: "How to measure the real idle power of a used mini PC home server, what makes it higher or lower, and how to turn watts into a yearly electricity cost. No made-up numbers.",
     updated: UPDATED,
@@ -143,6 +146,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "best-used-mini-pc-for-proxmox",
+    category: "workloads",
     title: "Choosing a used mini PC for Proxmox: RAM, drives, NICs and clusters",
     description: "What actually matters when picking a used Lenovo Tiny, OptiPlex Micro or EliteDesk Mini as a Proxmox VE node or a small cluster: RAM ceiling, second drive, networking, vPro and quorum.",
     updated: UPDATED,
@@ -186,6 +190,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "mini-pc-nvme-ssd-upgrade",
+    category: "upgrades",
     title: "Mini PC NVMe SSD upgrade guide: slots, sizes and the 2.5\" bay",
     description: "How many NVMe SSDs each used Lenovo Tiny, OptiPlex Micro and EliteDesk Mini holds, which M.2 slots are for storage versus Wi-Fi, and what you need for the 2.5\" bay.",
     updated: UPDATED,
@@ -216,6 +221,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "mini-pc-ram-upgrade",
+    category: "upgrades",
     title: "Mini PC RAM upgrade guide: DDR4 vs DDR5, speeds and slots",
     description: "Which memory each used Lenovo Tiny, OptiPlex Micro and EliteDesk Mini takes (DDR4 or DDR5 SODIMM), the official maximum, speeds, and how to upgrade without wasting money.",
     updated: UPDATED,
@@ -238,6 +244,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "mini-pc-opnsense-pfsense-router",
+    category: "workloads",
     title: "Using a used mini PC as an OPNsense or pfSense router",
     description: "Which used 1-litre PCs make good OPNsense or pfSense routers, how to get a second (or fourth) network port without USB, and what to avoid.",
     updated: UPDATED,
@@ -271,6 +278,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "mini-pc-for-nas",
+    category: "workloads",
     title: "Can a used mini PC be a NAS? Drive limits and better options",
     description: "How much storage a used 1-litre PC can really hold, when a mini PC NAS makes sense, why USB drive enclosures are a compromise, and which models hold the most drives.",
     updated: UPDATED,
@@ -304,6 +312,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "used-mini-pc-vs-n100",
+    category: "buying",
     title: "Used business mini PC vs a new Intel N100 mini PC for a home server",
     description: "A used Lenovo Tiny, OptiPlex Micro or EliteDesk Mini against a new Intel N100/N150 mini PC: cores, RAM ceiling, expansion, media decoding and warranty, compared on published specs.",
     updated: UPDATED,
@@ -348,6 +357,7 @@ export const NEW_GUIDES: Guide[] = [
   },
   {
     slug: "tinyminimicro-model-names-explained",
+    category: "buying",
     title: "Lenovo Tiny, OptiPlex Micro and EliteDesk Mini names explained (TinyMiniMicro)",
     description: "Decode the model names of used 1-litre business PCs: which Lenovo M-series, Dell OptiPlex Micro and HP EliteDesk/ProDesk Mini generations use which CPUs, and what the tiers mean.",
     updated: UPDATED,

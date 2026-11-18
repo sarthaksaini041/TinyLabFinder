@@ -13,7 +13,7 @@ type Sort = "newest" | "oldest" | "threads" | "drives";
 
 const SORT_OPTIONS: { value: Sort; label: string }[] = [
   { value: "newest", label: "Newest first" },
-  { value: "oldest", label: "Oldest (cheapest) first" },
+  { value: "oldest", label: "Oldest first" },
   { value: "threads", label: "Most CPU threads" },
   { value: "drives", label: "Most drive bays" },
 ];
@@ -102,7 +102,9 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
   }, []);
   useEffect(() => {
     if (!hydrated) return;
-    window.history.replaceState(null, "", `${window.location.pathname}${toQuery(f)}`);
+    const { pathname, search, hash } = window.location;
+    const query = toQuery(f);
+    if (query !== search) window.history.replaceState(null, "", `${pathname}${query}${hash}`);
   }, [f, hydrated]);
 
   const results = useMemo(() => applyFilters(items, f), [items, f]);

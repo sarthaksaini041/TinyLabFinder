@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { BRAND_COLLECTIONS } from "../data/brands";
 import { COMPARISONS } from "../data/comparisons";
 import { GUIDES } from "../data/guides";
 import { MODELS } from "../data/models";
@@ -17,6 +18,7 @@ import { latestFor, historyFor } from "../lib/prices/store";
 import { syncPrices } from "../lib/prices/sync";
 import type { PriceProvider } from "../lib/prices/types";
 import { DEFAULT_ANSWERS, recommend } from "../lib/quiz";
+import { absoluteUrl } from "../lib/site";
 
 const withEnv = async (env: Record<string, string | undefined>, fn: () => unknown | Promise<unknown>) => {
   const saved: Record<string, string | undefined> = {};
@@ -69,12 +71,25 @@ test("guides: unique slugs, internal links resolve", () => {
 });
 
 test("sitemap lists every public page once", async () => {
-  const urls = (await sitemap()).map((e) => e.url);
-  assert.equal(new Set(urls).size, urls.length, "duplicate sitemap entries");
+  const sitemapEntries = await sitemap();
+  const urls = sitemapEntries.map((e) => e.url);
+  const uniqueUrls = new Set(urls);
+  assert.equal(uniqueUrls.size, urls.length, "duplicate sitemap entries");
+  for (const collection of BRAND_COLLECTIONS) {
+    assert.ok(uniqueUrls.has(absoluteUrl(`/brands/${collection.slug}`)), collection.slug);
+    assert.ok(CATALOG.some((model) => model.brand === collection.brand), collection.brand);
+  }
+  for (const guide of GUIDES) {
+    const entry = sitemapEntries.find((item) => item.url === absoluteUrl(`/guides/${guide.slug}`));
+    assert.equal(entry?.lastModified, guide.updated, guide.slug);
+  }
   for (const u of PUBLISHED_USE_CASES) assert.ok(urls.some((x) => x.endsWith(`/best/${u.slug}`)), u.slug);
   for (const c of COMPARISONS) assert.ok(urls.some((x) => x.endsWith(`/compare/${c.slug}`)), c.slug);
   for (const m of MODELS) assert.ok(urls.some((x) => x.endsWith(`/models/${m.slug}`)), m.slug);
-  assert.ok(!urls.some((x) => /\/(account|login|signup|verify|api)\b/.test(x)), "private pages must not be in the sitemap");
+  assert.ok(!urls.some((url) => {
+    const { pathname, search, hash } = new URL(url);
+    return search || hash || /^(?:\/(account|login|signup|verify|forgot|api)\b|\/alerts\/unsubscribe\b)/.test(pathname);
+  }), "sitemap must contain only canonical public URLs");
 });
 
 test("quiz: transparent rules, no arbitrary scoring", () => {
