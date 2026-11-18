@@ -55,7 +55,7 @@ export default async function Home() {
               <li key={workload.href}>
                 <Link href={workload.href}>
                   <span><strong>{workload.title}</strong><small>{workload.description}</small></span>
-                  <span aria-hidden="true">↗</span>
+                  <span aria-hidden="true">→</span>
                 </Link>
               </li>
             ))}
