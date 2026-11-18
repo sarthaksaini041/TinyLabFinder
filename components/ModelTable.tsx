@@ -26,7 +26,7 @@ function cell(m: ModelView, c: Col, why?: (m: ModelView) => string): string {
 /** Data-driven table of models for guides and use-case pages. */
 export function ModelTable({ models, cols, why, caption }: { models: ModelView[]; cols: Col[]; why?: (m: ModelView) => string; caption?: string }) {
   return (
-    <div className="table-scroll panel" style={{ padding: 0 }}>
+    <div className="table-scroll panel" tabIndex={caption ? 0 : undefined} role={caption ? "region" : undefined} aria-label={caption} style={{ padding: 0 }}>
       <table className="grid-table">
         {caption && <caption className="skip">{caption}</caption>}
         <thead>

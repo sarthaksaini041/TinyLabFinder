@@ -8,7 +8,8 @@ Why this idea, with sources: [docs/RESEARCH.md](docs/RESEARCH.md).
 - **Finder** (`/`): filter by brand, 2+ NVMe slots, PCIe expansion, second-NIC option, 64 GB RAM, 4K HEVC / AV1 decode, and CPU vendor. Sort by age, threads or drive bays. Filters live in the URL, so results are shareable.
 - **Model pages** (`/models/[slug]`): spec sheet, owner notes, a transcoding table per CPU option, a buying checklist, eBay search links (US/UK/DE), similar models, and a confidence badge.
 - **Compare** (`/compare?m=a,b,c`): up to 3 models, with differing rows highlighted. Six curated head-to-heads at `/compare/[pair]` cover pairs people actually ask about on Reddit.
-- **Guides**: Quick Sync by generation, and a checklist for checking a used listing.
+- **Brand catalogs** (`/brands/[brand]`): manufacturer-specific specs, upgrade trade-offs and buying checks.
+- **Guides** (`/guides`): used hardware buying, home server workloads and upgrades.
 - **Accounts** (`/signup`, `/verify`, `/login`, `/forgot`, `/account`): name + email + password, confirmed with a 6-digit emailed code. Only price alerts need an account; everything else is open.
 - **Price alerts** (`/alerts`): logged-in users get an email when a fixed-price eBay listing is at or under their price; manage alerts on `/account`; one-click unsubscribe in every email.
 
@@ -72,7 +73,7 @@ See `.env.example`.
 5. **Email:** verify your domain in Resend, then set `RESEND_API_KEY` and `EMAIL_FROM`.
 6. **Cron:** set `CRON_SECRET` to a long random string. `vercel.json` runs the check once a day at 06:17 UTC (the most often Vercel's free Hobby plan allows; on Pro you can shorten it to every 6 hours), and Vercel sends the secret as a Bearer token.
 7. **Domain:** in Vercel's Domains settings, add the domain and create the DNS records it shows you.
-8. **Search Console:** submit `https://yourdomain/sitemap.xml` in Google Search Console.
+8. **Search Console:** verify the domain property with a DNS record, or add `GOOGLE_SITE_VERIFICATION` in Vercel using the `content` value of the verification tag for the `https://tinylabfinder.online/` URL-prefix property and redeploy. Submit `https://tinylabfinder.online/sitemap.xml` in Sitemaps. Use URL Inspection to check the selected canonical and request a crawl of individual new pages.
 
 On any other host, run `npm run build && npm start` and call `/api/cron/check-prices` with the header `Authorization: Bearer $CRON_SECRET` on a schedule.
 

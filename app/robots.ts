@@ -3,7 +3,8 @@ import { absoluteUrl } from "../lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/", disallow: ["/api/", "/alerts/unsubscribe", "/account", "/login", "/signup", "/verify", "/forgot"] }],
+    // Utility pages declare noindex in HTML. Crawlers need access to read it.
+    rules: [{ userAgent: "*", allow: "/", disallow: "/api/" }],
     sitemap: absoluteUrl("/sitemap.xml"),
   };
 }

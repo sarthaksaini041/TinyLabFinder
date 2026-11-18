@@ -9,6 +9,7 @@ import { SpecSheet } from "../../../components/SpecSheet";
 import { CATALOG, alternatives, getView } from "../../../lib/catalog";
 import { MEDIA, VERDICT_TEXT } from "../../../lib/media";
 import { SITE, absoluteUrl } from "../../../lib/site";
+import { BRAND_COLLECTIONS } from "../../../data/brands";
 import { comparisonsFor } from "../../../data/comparisons";
 import { GUIDES } from "../../../data/guides";
 import { useCasesFor } from "../../../data/usecases";
@@ -48,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ModelPage({ params }: Props) {
   const m = getView((await params).slug);
   if (!m) notFound();
+  const brand = BRAND_COLLECTIONS.find((collection) => collection.brand === m.brand);
   const alts = alternatives(m);
   const related = comparisonsFor(m.slug);
   const uses = useCasesFor(m);
@@ -85,7 +87,7 @@ export default async function ModelPage({ params }: Props) {
 
   return (
     <>
-      <Breadcrumbs items={[{ name: "Models", href: "/#main" }, { name: m.shortName, href: `/models/${m.slug}` }]} />
+      <Breadcrumbs items={[...(brand ? [{ name: brand.brand, href: `/brands/${brand.slug}` }] : []), { name: m.shortName, href: `/models/${m.slug}` }]} />
       <div className="layout layout--side">
         <article>
           <div className="model-hero">

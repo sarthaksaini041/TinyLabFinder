@@ -4,11 +4,21 @@ import { MediaTable } from "../components/MediaTable";
 import { CATALOG, type ModelView } from "../lib/catalog";
 import { NEW_GUIDES } from "./guides-more";
 
+import { HOME_SERVER_GUIDES } from "./guides-home-server";
+
+export const GUIDE_CATEGORIES = {
+  buying: "Buying & power",
+  workloads: "Home server workloads",
+  upgrades: "Parts & upgrades",
+} as const;
+
 export interface Guide {
   slug: string;
+  category: keyof typeof GUIDE_CATEGORIES;
   title: string;
   description: string;
   updated: string;
+  published?: string;
   body: () => ReactNode;
   /** Models this guide is relevant to (drives "Related guides" on model pages). */
   models?: (m: ModelView) => boolean;
@@ -19,6 +29,7 @@ export interface Guide {
 export const GUIDES: Guide[] = [
   {
     slug: "quick-sync-generations-plex-jellyfin",
+    category: "workloads",
     title: "Which used mini PCs can transcode 4K for Plex and Jellyfin?",
     description: "Intel Quick Sync and AMD VCN capabilities by generation, and what they mean for 4K HEVC, HDR and AV1 files on a used mini PC media server.",
     updated: "2026-09-25",
@@ -64,11 +75,15 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "check-a-used-mini-pc-listing",
+    category: "buying",
     title: "How to check a used mini PC listing before you buy",
     description: "A practical checklist for buying an ex-office ThinkCentre Tiny, OptiPlex Micro or EliteDesk Mini: CPU, RAM, power adapter, drive caddies, BIOS locks and fair prices.",
     updated: "2026-09-25",
     models: () => true,
-    related: [{ href: "/which-mini-pc", label: "Which mini PC is right for me? (quiz)" }],
+    related: [
+      { href: "/which-mini-pc", label: "Which mini PC is right for me? (quiz)" },
+      { href: "/guides/intel-t-vs-non-t-mini-pc", label: "What Intel T-series CPUs mean for a used mini PC" },
+    ],
     body: () => (
       <>
         <p>Refurbished office mini PCs are cheap because they come by the pallet. Listings are often vague, so the same model can be a bargain or a dud depending on what is actually in the box. Check these before you pay.</p>
@@ -93,6 +108,7 @@ export const GUIDES: Guide[] = [
       </>
     ),
   },
+  ...HOME_SERVER_GUIDES,
   ...NEW_GUIDES,
 ];
 
