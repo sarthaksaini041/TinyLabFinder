@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
 import Link from "next/link";
-import { AD_PROVIDER, adsEnabled } from "../../components/ads/AdConfig";
+import { adsEnabled } from "../../components/ads/AdConfig";
 import { CookieSettingsButton } from "../../components/consent/CookieConsent";
 import { SITE } from "../../lib/site";
 
@@ -12,15 +12,15 @@ export const metadata: Metadata = {
 };
 
 export default function Cookies() {
-  const adsOn = AD_PROVIDER === "adsense" && adsEnabled();
+  const adsOn = adsEnabled();
   return (
     <div className="prose">
       <Breadcrumbs items={[{ name: "Cookies", href: "/cookies" }]} />
       <h1>Cookie policy</h1>
       <p className="muted small">Last updated {SITE.dataUpdated}</p>
       <p>
-        We use very little. Browsing models, filters, comparisons and guides sets no cookies
-        at all. The only cookie we set is a login cookie, and only after you sign in.
+        We set a login cookie when you sign in. Model browsing, filters and comparisons do not require it. See the
+        advertising section for cookies Google may use on guides.
       </p>
 
       <h2>What we use</h2>
@@ -73,7 +73,7 @@ export default function Cookies() {
       <h2>Advertising</h2>
       {adsOn ? (
         <p>
-          This site shows ads served by Google AdSense. Google and its partners may set cookies to serve and measure ads.
+          Guides may show one display ad served by Google AdSense after the article. Google and its partners may set cookies to serve and measure ads.
           Visitors in the EEA, UK and Switzerland are asked for consent through Google&apos;s certified consent message
           before any personalised ads or ad cookies are used. You can change your choice at any time from the
           &quot;Privacy and cookie settings&quot; link that message adds to the page.

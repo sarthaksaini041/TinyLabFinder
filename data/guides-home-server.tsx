@@ -56,6 +56,7 @@ export const HOME_SERVER_GUIDES: Guide[] = [
     updated: published,
     related: [
       { href: "/guides/best-used-mini-pc-for-proxmox", label: "Choose a mini PC for Proxmox" },
+      { href: "/guides/mini-pc-home-server-backup-checklist", label: "Plan backups for a single mini PC" },
       { href: "/guides/home-assistant-mini-pc", label: "Choose a mini PC for Home Assistant" },
       { href: "/best/best-mini-pc-for-proxmox", label: "Compare used mini PCs for Proxmox" },
     ],

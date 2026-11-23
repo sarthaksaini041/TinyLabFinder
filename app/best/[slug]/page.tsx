@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AdSlot } from "../../../components/ads/AdSlot";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { ModelTable } from "../../../components/ModelTable";
 import { GUIDES } from "../../../data/guides";
@@ -44,14 +43,13 @@ export default async function UseCasePage({ params }: Props) {
   return (
     <>
       <Breadcrumbs items={[{ name: "Best for", href: "/best" }, { name: u.label, href: `/best/${u.slug}` }]} />
-      <div className="layout layout--side">
+      <div className="layout">
         <article>
           <h1>{u.title}</h1>
           <p className="lede">{u.context}</p>
           <p className="notice small"><strong>Criteria:</strong> {u.criteria} {list.length} of our models match. Data last reviewed {SITE.dataUpdated}.</p>
           <ModelTable models={list} cols={["released", "gen", "why"]} why={u.why} caption={u.title} />
           {u.finderQuery && <p><Link href={`/${u.finderQuery}`}>Open this filter in the finder →</Link></p>}
-          <AdSlot placement="in-content" />
           {guides.length > 0 && (
             <>
               <h2>Guides</h2>
@@ -66,7 +64,6 @@ export default async function UseCasePage({ params }: Props) {
           )}
           <p className="small muted">Something wrong or missing? <Link href="/contact">Send a correction</Link>. Lists are built from each model&apos;s documented specs; models marked &quot;verify&quot; have fields we could not confirm from an official document.</p>
         </article>
-        <div><AdSlot placement="sidebar" /></div>
       </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
     </>

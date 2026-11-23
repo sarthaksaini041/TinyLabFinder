@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AdSlot } from "../../../components/ads/AdSlot";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { CompareTable, differences } from "../../../components/CompareTable";
 import { COMPARISONS, comparisonsFor } from "../../../data/comparisons";
@@ -48,7 +47,6 @@ export default async function PairPage({ params }: Props) {
       <h1>{c.title}</h1>
       <p className="lede">{c.question} The differences that matter for a home server:</p>
       <ul className="prose">{differences(a, b).map((t) => <li key={t}>{t}</li>)}</ul>
-      <AdSlot placement="in-content" />
       <h2>Full spec comparison</h2>
       <CompareTable models={[a, b]} />
       {(a.confidence === "check" || b.confidence === "check") && (

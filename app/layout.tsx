@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import type { ReactNode } from "react";
-import { AdScript } from "../components/ads/AdScript";
 import { Analytics } from "../components/analytics/Analytics";
 import { VercelInsights } from "../components/analytics/VercelInsights";
 import { CookieConsent } from "../components/consent/CookieConsent";
@@ -42,7 +41,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </main>
         <Footer />
         <CookieConsent />
-        <AdScript />
         <Analytics />
         {/* Only on Vercel deployments: the scripts are served by Vercel itself. */}
         {process.env.NEXT_PUBLIC_VERCEL_ENV && <VercelInsights />}

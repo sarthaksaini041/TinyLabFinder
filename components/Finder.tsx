@@ -83,6 +83,7 @@ type Img = { imageUrl: string; listingUrl: string | null };
 
 export function Finder({ items, initialPrices = {}, initialImages = {} }: { items: ModelView[]; initialPrices?: Record<string, Price>; initialImages?: Record<string, Img> }) {
   const [f, setF] = useState<Filters>(DEFAULTS);
+  const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const compare = useCompare();
@@ -107,7 +108,17 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
     if (query !== search) window.history.replaceState(null, "", `${pathname}${query}${hash}`);
   }, [f, hydrated]);
 
-  const results = useMemo(() => applyFilters(items, f), [items, f]);
+  const results = useMemo(() => {
+    const words = searchText.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    const matches = items.filter((model) => {
+      const searchable = [model.name, ...model.searchAliases, ...model.cpuList.map((cpu) => cpu.name)]
+        .join(" ")
+        .toLowerCase();
+      return words.every((word) => searchable.includes(word));
+    });
+    return applyFilters(matches, f);
+  }, [items, f, searchText]);
+  const hasSearch = searchText.trim().length > 0;
   const update = (patch: Partial<Filters>, name: string) => {
     setF((prev) => ({ ...prev, ...patch }));
     track("filter_change", { filter: name });
@@ -175,6 +186,19 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
       </section>
 
       <section aria-label="Results">
+        <div className="finder-search">
+          <label htmlFor="finder-search">Search by model or CPU</label>
+          <div className="finder-search__controls">
+            <input
+              id="finder-search"
+              type="search"
+              placeholder="M920q, OptiPlex 7080, i5-8500T"
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+            {hasSearch && <button className="btn" type="button" onClick={() => setSearchText("")}>Clear search</button>}
+          </div>
+        </div>
         <div className="results-bar">
           <p className="muted" role="status" aria-live="polite" style={{ margin: 0 }}>
             {results.length} of {items.length} models
@@ -194,9 +218,9 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
 
         {results.length === 0 ? (
           <div className="empty">
-            <p><strong>No model matches all of those filters.</strong></p>
-            <p className="muted">The rarest combination is PCIe expansion with two NVMe slots. Try removing one filter.</p>
-            <button type="button" className="btn" onClick={() => update({ ...DEFAULTS, sort: f.sort }, "reset")}>Clear filters</button>
+            <p><strong>No matching models.</strong></p>
+            <p className="muted">{hasSearch ? "Try a shorter model name or CPU number." : "Try removing a hardware filter."}</p>
+            {active && <button type="button" className="btn" onClick={() => update({ ...DEFAULTS, sort: f.sort }, "reset")}>Clear filters</button>}
           </div>
         ) : (
           <ul className="cards">
