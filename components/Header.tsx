@@ -7,7 +7,7 @@ export function Header() {
     <header className="site-header">
       <div className="wrap">
         <Link href="/" className="brand" aria-label={`${SITE.name} home`}>
-          <span className="brand__mark" aria-hidden="true" />
+          <img src="/icon.png" width={32} height={32} alt="" className="brand__mark" />
           {SITE.name}
         </Link>
         <NavMenu />
