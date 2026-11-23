@@ -60,6 +60,7 @@ export const NEW_GUIDES: Guide[] = [
     models: (m) => m.pcieSlot !== "none" || (m.lanUpgrades ?? []).length > 0,
     related: [
       { href: "/best/mini-pcs-that-support-10gbe", label: "Mini PCs that support 10GbE" },
+      { href: "/guides/1gbe-vs-2-5gbe-vs-10gbe-home-server", label: "Decide whether you need 2.5GbE or 10GbE" },
       { href: "/best/mini-pcs-with-pcie-slot", label: "Mini PCs with a PCIe slot" },
       { href: "/guides/mini-pc-opnsense-pfsense-router", label: "Mini PC as an OPNsense/pfSense router" },
     ],
@@ -154,6 +155,7 @@ export const NEW_GUIDES: Guide[] = [
     related: [
       { href: "/best/best-mini-pc-for-proxmox", label: "Models that meet the Proxmox criteria" },
       { href: "/best/mini-pcs-with-two-nvme-slots", label: "Mini PCs with two NVMe slots" },
+      { href: "/guides/check-used-nvme-ssd-health", label: "Check the health of a used NVMe SSD" },
       { href: "/best/mini-pcs-with-intel-vpro-amt", label: "Mini PCs with vPro/AMT" },
     ],
     body: () => (

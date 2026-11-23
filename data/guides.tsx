@@ -6,6 +6,7 @@ import { NEW_GUIDES } from "./guides-more";
 
 import { HOME_SERVER_GUIDES } from "./guides-home-server";
 import { OPERATIONS_GUIDES } from "./guides-operations";
+import { HARDWARE_PLANNING_GUIDES } from "./guides-hardware-planning";
 
 export const GUIDE_CATEGORIES = {
   buying: "Buying & power",
@@ -109,6 +110,7 @@ export const GUIDES: Guide[] = [
       </>
     ),
   },
+  ...HARDWARE_PLANNING_GUIDES,
   ...OPERATIONS_GUIDES,
   ...HOME_SERVER_GUIDES,
   ...NEW_GUIDES,

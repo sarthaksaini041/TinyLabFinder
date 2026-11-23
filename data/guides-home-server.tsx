@@ -13,6 +13,7 @@ export const HOME_SERVER_GUIDES: Guide[] = [
     updated: published,
     related: [
       { href: "/guides/proxmox-vs-docker-home-server", label: "Proxmox vs Docker for a home server" },
+      { href: "/guides/used-mini-pc-for-frigate", label: "Size a mini PC for Frigate and Home Assistant" },
       { href: "/best/best-budget-mini-pc-home-server", label: "Browse budget home server mini PCs" },
       { href: "/guides/check-a-used-mini-pc-listing", label: "Check a used listing before buying" },
     ],
