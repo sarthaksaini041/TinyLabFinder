@@ -24,8 +24,12 @@ export function ModelPhoto({ name, image, listingUrl, priority = false, size = "
       </div>
     );
   }
+  const small = size === "card" && /^https:\/\/i\.ebayimg\.com\//.test(image)
+    ? image.replace(/\/s-l\d+\./, "/s-l225.")
+    : image;
+  const srcSet = small !== image ? `${small} 225w, ${image} 500w` : undefined;
   const img = (
-    <img src={image} alt={`${name} (photo from an eBay listing)`} loading={priority ? "eager" : "lazy"} decoding="async" width={500} height={375} referrerPolicy="no-referrer" />
+    <img src={image} srcSet={srcSet} sizes={srcSet ? "(min-width: 900px) 116px, 86px" : undefined} fetchPriority={priority ? "high" : undefined} alt={`${name} (photo from an eBay listing)`} loading={priority ? "eager" : "lazy"} decoding="async" width={500} height={375} referrerPolicy="no-referrer" />
   );
   return (
     <figure className={cls}>

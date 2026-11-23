@@ -40,11 +40,11 @@ export default async function Home() {
     <>
       <header className="finder-hero">
         <div className="finder-hero__intro">
-          <h1>Find the right used mini PC for your home server</h1>
-          <p className="lede">Compare {CATALOG.length} ex-office mini PCs by RAM, NVMe slots, network upgrades and video codecs.</p>
+          <h1>Find a used mini PC for your home server</h1>
+          <p className="lede">Compare {CATALOG.length} Lenovo, Dell and HP mini PCs by memory, storage and the jobs they can handle.</p>
           <div className="btn-row">
-            <a className="btn btn--primary" href="#finder">Browse the catalog <span aria-hidden="true">↓</span></a>
-            <Link className="btn" href="/which-mini-pc">Get a recommendation</Link>
+            <a className="btn btn--primary" href="#finder">Find a mini PC <span aria-hidden="true">↓</span></a>
+            <Link className="btn" href="/which-mini-pc">Help me choose</Link>
           </div>
         </div>
         <nav className="finder-hero__workloads" aria-labelledby="workload-heading">

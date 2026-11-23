@@ -89,6 +89,17 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
   const compare = useCompare();
   const [prices, setPrices] = useState<Record<string, Price>>(initialPrices);
   const [images, setImages] = useState<Record<string, Img>>(initialImages);
+  const priceLabels = useMemo(() => {
+    const formatters = new Map<string, Intl.NumberFormat>();
+    return Object.fromEntries(Object.entries(prices).map(([slug, price]) => {
+      let formatter = formatters.get(price.currency);
+      if (!formatter) {
+        formatter = new Intl.NumberFormat("en", { style: "currency", currency: price.currency, maximumFractionDigits: 0 });
+        formatters.set(price.currency, formatter);
+      }
+      return [slug, { from: formatter.format(price.min), median: formatter.format(price.median), count: price.n }];
+    }));
+  }, [prices]);
   useEffect(() => {
     if (Object.keys(initialPrices).length) return; // server already rendered fresh data
     fetch("/api/prices").then((r) => (r.ok ? r.json() : null)).then((j) => {
@@ -108,16 +119,17 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
     if (query !== search) window.history.replaceState(null, "", `${pathname}${query}${hash}`);
   }, [f, hydrated]);
 
+  const searchIndex = useMemo(() => items.map((model) => ({
+    model,
+    text: [model.name, ...model.searchAliases, ...model.cpuList.map((cpu) => cpu.name)].join(" ").toLowerCase(),
+  })), [items]);
   const results = useMemo(() => {
     const words = searchText.toLowerCase().trim().split(/\s+/).filter(Boolean);
-    const matches = items.filter((model) => {
-      const searchable = [model.name, ...model.searchAliases, ...model.cpuList.map((cpu) => cpu.name)]
-        .join(" ")
-        .toLowerCase();
-      return words.every((word) => searchable.includes(word));
-    });
+    const matches = words.length
+      ? searchIndex.filter(({ text }) => words.every((word) => text.includes(word))).map(({ model }) => model)
+      : items;
     return applyFilters(matches, f);
-  }, [items, f, searchText]);
+  }, [items, f, searchText, searchIndex]);
   const hasSearch = searchText.trim().length > 0;
   const update = (patch: Partial<Filters>, name: string) => {
     setF((prev) => ({ ...prev, ...patch }));
@@ -130,14 +142,28 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
 
   return (
     <div className="finder">
-      <section className="filters panel" data-open={open} aria-label="Filters">
+      <div className="finder-search">
+        <label htmlFor="finder-search">Search by model or CPU</label>
+        <div className="finder-search__controls">
+          <input
+            id="finder-search"
+            type="search"
+            placeholder="Try M920q or i5-8500T"
+            value={searchText}
+            onChange={(event) => setSearchText(event.target.value)}
+          />
+          {hasSearch && <button className="btn" type="button" onClick={() => setSearchText("")}>Clear search</button>}
+        </div>
         <button type="button" className="btn filters-toggle" aria-expanded={open} aria-controls="filters-body" onClick={() => setOpen(!open)}>
           <span className="filters-toggle__label">
-            Filters
+            {open ? "Hide filters" : "Filters"}
             {activeCount > 0 && <span className="filters-toggle__count" aria-label={`${activeCount} active`}>{activeCount}</span>}
           </span>
           <span className="filters-toggle__chev" aria-hidden="true" />
         </button>
+      </div>
+      <section className="filters panel" data-open={open} aria-label="Filters">
+        <h3 className="filters__heading">Filters</h3>
         <div className="filters__body" id="filters-body">
           <fieldset>
             <legend>Brand</legend>
@@ -185,20 +211,7 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
         </div>
       </section>
 
-      <section aria-label="Results">
-        <div className="finder-search">
-          <label htmlFor="finder-search">Search by model or CPU</label>
-          <div className="finder-search__controls">
-            <input
-              id="finder-search"
-              type="search"
-              placeholder="M920q, OptiPlex 7080, i5-8500T"
-              value={searchText}
-              onChange={(event) => setSearchText(event.target.value)}
-            />
-            {hasSearch && <button className="btn" type="button" onClick={() => setSearchText("")}>Clear search</button>}
-          </div>
-        </div>
+      <section className="finder-results" aria-label="Results">
         <div className="results-bar">
           <p className="muted" role="status" aria-live="polite" style={{ margin: 0 }}>
             {results.length} of {items.length} models
@@ -223,23 +236,24 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
             {active && <button type="button" className="btn" onClick={() => update({ ...DEFAULTS, sort: f.sort }, "reset")}>Clear filters</button>}
           </div>
         ) : (
-          <ul className="cards">
+          <ul className="cards finder-cards">
             {results.map((m) => {
               const inCompare = compare.list.includes(m.slug);
+              const price = priceLabels[m.slug];
               return (
                 <li key={m.slug} className="card card--photo">
                   <Link href={`/models/${m.slug}`} className="card__photo" tabIndex={-1} aria-hidden="true">
                     <ModelPhoto name={m.name} image={images[m.slug]?.imageUrl} />
                   </Link>
                   <div className="card__top">
-                    <h2 className="card__title"><Link href={`/models/${m.slug}`}>{m.name}</Link></h2>
+                    <h3 className="card__title"><Link href={`/models/${m.slug}`}>{m.name}</Link></h3>
                     <span className="muted small">{m.released} · {m.chipset ?? m.family}</span>
                   </div>
                   <span className="verdict small"><span className={`dot dot--${m.verdict}`} aria-hidden="true" />{VERDICT_TEXT[m.verdict]}</span>
-                  {prices[m.slug] && (
+                  {price && (
                     <p className="card__price">
-                      <strong>From {new Intl.NumberFormat("en", { style: "currency", currency: prices[m.slug].currency, maximumFractionDigits: 0 }).format(prices[m.slug].min)}</strong>
-                      <span className="muted small"> used on eBay · median {new Intl.NumberFormat("en", { style: "currency", currency: prices[m.slug].currency, maximumFractionDigits: 0 }).format(prices[m.slug].median)} ({prices[m.slug].n} listings)</span>
+                      <strong>From {price.from}</strong>
+                      <span className="muted small"> used on eBay · median {price.median} ({price.count} listings)</span>
                     </p>
                   )}
                   <dl className="kv">
@@ -248,8 +262,8 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
                     <div><dt>Max RAM</dt><dd>{m.ram.maxOfficialGB} GB official</dd></div>
                     <div><dt>Expansion</dt><dd>{m.pcieSlot === "none" ? (m.extraNicOption ? "Flex IO" : "None") : "PCIe"}</dd></div>
                   </dl>
-                  <div className="btn-row" style={{ margin: "4px 0 0" }}>
-                    <Link className="btn" href={`/models/${m.slug}`}>Specs &amp; buying notes</Link>
+                  <div className="btn-row card__actions">
+                    <Link className="btn" href={`/models/${m.slug}`}>View specs</Link>
                     <button
                       type="button"
                       className="btn"
