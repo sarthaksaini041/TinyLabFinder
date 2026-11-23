@@ -155,7 +155,6 @@ export const NEW_GUIDES: Guide[] = [
     related: [
       { href: "/best/best-mini-pc-for-proxmox", label: "Models that meet the Proxmox criteria" },
       { href: "/best/mini-pcs-with-two-nvme-slots", label: "Mini PCs with two NVMe slots" },
-      { href: "/guides/check-used-nvme-ssd-health", label: "Check the health of a used NVMe SSD" },
       { href: "/best/mini-pcs-with-intel-vpro-amt", label: "Mini PCs with vPro/AMT" },
     ],
     body: () => (
@@ -198,6 +197,7 @@ export const NEW_GUIDES: Guide[] = [
     updated: UPDATED,
     models: () => true,
     related: [
+      { href: "/guides/check-used-nvme-ssd-health", label: "Check the health of a used NVMe SSD" },
       { href: "/best/mini-pcs-with-two-nvme-slots", label: "Mini PCs with two NVMe slots" },
       { href: "/guides/mini-pc-for-nas", label: "Can a mini PC be a NAS?" },
     ],

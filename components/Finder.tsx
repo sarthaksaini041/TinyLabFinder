@@ -29,12 +29,13 @@ interface Filters {
 }
 const DEFAULTS: Filters = { brands: [], twoNvme: false, pcie: false, secondNic: false, ram64: false, media: "any", vendor: "any", sort: "newest" };
 
-function fromQuery(q: URLSearchParams): Filters {
+function fromQuery(q: URLSearchParams, knownBrands: readonly string[]): Filters {
   const media = q.get("media");
   const vendor = q.get("cpu");
   const sort = q.get("sort");
   return {
-    brands: (q.get("brand") || "").split(",").filter(Boolean),
+    brands: [...new Set((q.get("brand") ?? "").split(",").map((brand) => brand.trim()))]
+      .filter((brand) => knownBrands.includes(brand)),
     twoNvme: q.get("nvme") === "2",
     pcie: q.get("pcie") === "1",
     secondNic: q.get("nic2") === "1",
@@ -87,6 +88,7 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const compare = useCompare();
+  const brands = useMemo(() => [...new Set(items.map((model) => model.brand))], [items]);
   const [prices, setPrices] = useState<Record<string, Price>>(initialPrices);
   const [images, setImages] = useState<Record<string, Img>>(initialImages);
   const priceLabels = useMemo(() => {
@@ -109,9 +111,9 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
   }, [initialPrices]);
 
   useEffect(() => {
-    setF(fromQuery(new URLSearchParams(window.location.search)));
+    setF(fromQuery(new URLSearchParams(window.location.search), brands));
     setHydrated(true);
-  }, []);
+  }, [brands]);
   useEffect(() => {
     if (!hydrated) return;
     const { pathname, search, hash } = window.location;
@@ -135,7 +137,6 @@ export function Finder({ items, initialPrices = {}, initialImages = {} }: { item
     setF((prev) => ({ ...prev, ...patch }));
     track("filter_change", { filter: name });
   };
-  const brands = [...new Set(items.map((i) => i.brand))];
   const activeCount =
     f.brands.length + [f.twoNvme, f.pcie, f.secondNic, f.ram64, f.media !== "any", f.vendor !== "any"].filter(Boolean).length;
   const active = activeCount > 0;

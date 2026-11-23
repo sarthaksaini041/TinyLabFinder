@@ -11,8 +11,11 @@ const MAX = 3;
 export function ComparePicker({ items }: { items: ModelView[] }) {
   const params = useSearchParams();
   const router = useRouter();
-  const slugs = (params.get("m") || "").split(",").filter((s) => items.some((i) => i.slug === s)).slice(0, MAX);
-  const chosen = slugs.map((s) => items.find((i) => i.slug === s)!);
+  const available = new Map(items.map((model) => [model.slug, model]));
+  const slugs = [...new Set((params.get("m") ?? "").split(",").map((slug) => slug.trim()))]
+    .filter((slug) => available.has(slug))
+    .slice(0, MAX);
+  const chosen = slugs.map((s) => available.get(s)!);
 
   useEffect(() => {
     if (chosen.length >= 2) track("compare_view", { count: chosen.length });

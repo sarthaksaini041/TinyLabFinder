@@ -24,7 +24,7 @@ const ROWS: [string, (m: ModelView) => string][] = [
 
 export function CompareTable({ models }: { models: ModelView[] }) {
   return (
-    <div className="table-scroll panel" style={{ padding: 0 }}>
+    <div className="table-scroll panel" role="region" aria-label="Model specifications comparison" tabIndex={0} style={{ padding: 0 }}>
       <table className="grid-table">
         <thead>
           <tr>
