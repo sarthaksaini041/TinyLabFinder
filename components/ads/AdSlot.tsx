@@ -1,28 +1,19 @@
-import { AD_PROVIDER, ADSENSE_CLIENT, PLACEMENTS, adsEnabled, type Placement } from "./AdConfig";
+import { AD_PROVIDER, ADSENSE_CLIENT, ADSENSE_SLOT, adsEnabled } from "./AdConfig";
 import { AdContainer } from "./AdContainer";
+import { AdScript } from "./AdScript";
 import { ResponsiveAd } from "./ResponsiveAd";
 
-/**
- * The only component pages use to show ads. Renders nothing when ads are disabled
- * or a placement has no slot configured, so there are never empty ad boxes.
- */
-export function AdSlot({ placement }: { placement: Placement }) {
-  if (!adsEnabled()) return null;
-  const config = PLACEMENTS[placement];
-
+/** Single fixed placement after the guide and its related links. */
+export function AdSlot() {
   if (AD_PROVIDER === "placeholder") {
-    return (
-      <AdContainer config={config}>
-        <div className="ad__placeholder">Ad placeholder · {placement}</div>
-      </AdContainer>
-    );
+    return <AdContainer><div className="ad__placeholder">Guide footer ad preview</div></AdContainer>;
   }
-  if (AD_PROVIDER === "adsense" && config.adsenseSlot) {
-    return (
-      <AdContainer config={config}>
-        <ResponsiveAd client={ADSENSE_CLIENT} slot={config.adsenseSlot} format={config.format} />
-      </AdContainer>
-    );
-  }
-  return null;
+  if (!adsEnabled()) return null;
+
+  return (
+    <AdContainer>
+      <AdScript />
+      <ResponsiveAd client={ADSENSE_CLIENT} slot={ADSENSE_SLOT} />
+    </AdContainer>
+  );
 }

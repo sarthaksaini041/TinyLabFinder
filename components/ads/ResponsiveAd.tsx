@@ -6,7 +6,7 @@ declare global {
 }
 
 /** A single responsive AdSense unit. Pushes once per mount. */
-export function ResponsiveAd({ client, slot, format }: { client: string; slot: string; format: string }) {
+export function ResponsiveAd({ client, slot }: { client: string; slot: string }) {
   const pushed = useRef(false);
   useEffect(() => {
     if (pushed.current) return;
@@ -23,7 +23,7 @@ export function ResponsiveAd({ client, slot, format }: { client: string; slot: s
       style={{ display: "block", width: "100%" }}
       data-ad-client={client}
       data-ad-slot={slot}
-      data-ad-format={format}
+      data-ad-format="horizontal"
       data-full-width-responsive="true"
     />
   );

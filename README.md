@@ -92,28 +92,12 @@ Tracked events (no personal data):
 Traffic sources, top pages, returning visitors and search traffic come from the provider dashboard. Connect Search Console for search queries.
 
 ## AdSense setup (after approval; approval is not guaranteed)
-1. **Apply first.** Apply once the site has real traffic and the specs are verified. Google requires original, valuable content, and thin or unverified pages hurt approval.
-2. **Configure the environment:**
-   - Set `NEXT_PUBLIC_ADS_PROVIDER=adsense` and `NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-…`.
-   - `/ads.txt` is then generated automatically.
-3. **Create ad units.** Create responsive display units in AdSense and put their IDs in:
-   - `NEXT_PUBLIC_AD_SLOT_IN_CONTENT`
-   - `NEXT_PUBLIC_AD_SLOT_SIDEBAR`
-   - `NEXT_PUBLIC_AD_SLOT_BELOW_RESULTS`
-   - `NEXT_PUBLIC_AD_SLOT_FOOTER` (optional)
+1. Publish the Google consent message in **Privacy & messaging** for the EEA, UK and Switzerland.
+2. Keep **Auto ads** and **Auto optimize** disabled for the site in AdSense.
+3. Set `NEXT_PUBLIC_ADSENSE_CLIENT` to the publisher's `ca-pub-…` value in production. The site uses it for `/ads.txt` even when display ads are off.
+4. Create one responsive Display ads unit, set `NEXT_PUBLIC_AD_SLOT_FOOTER` to its ID, and set `NEXT_PUBLIC_ADS_PROVIDER=adsense`. Rebuild and deploy.
 
-   A placement with no ID renders nothing.
-4. **Consent (EEA/UK/Switzerland).** In AdSense, go to **Privacy & messaging** and publish Google's certified consent message for those regions. It's served by the AdSense script, so no code change is needed.
-5. **Rebuild and redeploy.**
-
-**How the ad system behaves:**
-- Ads are off by default.
-- Every ad is labelled "Advertisement" and kept apart from content and navigation.
-- Space is reserved in advance to avoid layout shift.
-- The sidebar ad appears on desktop only.
-- There are no ads on the alert-confirmation, unsubscribe or error pages.
-
-**Adding another ad network:** add it to `AdProvider` in `components/ads/AdConfig.ts` and write a renderer in `AdSlot.tsx`.
+The site renders one labelled slot after a full guide and its related links. Finder, model, comparison, account and quiz pages have no ad placements. Vercel previews omit live ads. Google serves ads after the site is approved and eligible inventory is available.
 
 ## Other monetization already wired up
 - **eBay Partner Network:** set `NEXT_PUBLIC_EPN_CAMPAIGN_ID`. Links then become `rel="sponsored"` and show a disclosure.

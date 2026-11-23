@@ -36,13 +36,13 @@ export function CookieConsent() {
       {banner && (
         <section className="consent" role="region" aria-label="Cookie notice">
           <p>
-            We only use a login cookie when you sign in, and cookieless analytics to see which pages help people. No ad or
-            tracking cookies. <Link href="/cookies">Cookie policy</Link>
+            We use a login cookie if you sign in. You can turn off cookieless analytics here. Advertising on guides has
+            separate privacy controls where applicable. <Link href="/cookies">Cookie policy</Link>
           </p>
           <div className="consent__actions">
             <button type="button" className="btn" onClick={() => dialog.current?.showModal()}>Settings</button>
             <button type="button" className="btn" onClick={() => choose(false)}>Necessary only</button>
-            <button type="button" className="btn btn--primary" onClick={() => choose(true)}>Accept all</button>
+            <button type="button" className="btn btn--primary" onClick={() => choose(true)}>Allow analytics</button>
           </div>
         </section>
       )}

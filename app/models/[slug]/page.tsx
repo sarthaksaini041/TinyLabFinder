@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AdSlot } from "../../../components/ads/AdSlot";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { ListingLinks } from "../../../components/ListingLinks";
 import { MediaTable } from "../../../components/MediaTable";
@@ -88,7 +87,7 @@ export default async function ModelPage({ params }: Props) {
   return (
     <>
       <Breadcrumbs items={[...(brand ? [{ name: brand.brand, href: `/brands/${brand.slug}` }] : []), { name: m.shortName, href: `/models/${m.slug}` }]} />
-      <div className="layout layout--side">
+      <div className="layout">
         <article>
           <div className="model-hero">
             <ModelPhoto name={m.name} image={image?.imageUrl} listingUrl={image?.listingUrl} size="hero" priority />
@@ -148,7 +147,6 @@ export default async function ModelPage({ params }: Props) {
             </>
           )}
 
-          <AdSlot placement="in-content" />
 
           <h2>Power consumption</h2>
           {power.length ? (
@@ -236,7 +234,6 @@ export default async function ModelPage({ params }: Props) {
           </ul>
           <p><Link href={`/compare?m=${[m.slug, ...alts.slice(0, 2).map((a) => a.slug)].join(",")}`}>Compare these side by side →</Link></p>
         </article>
-        <div><AdSlot placement="sidebar" /></div>
       </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
     </>

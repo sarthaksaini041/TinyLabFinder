@@ -1,9 +1,8 @@
 import Script from "next/script";
-import { AD_PROVIDER, ADSENSE_CLIENT, adsEnabled } from "./AdConfig";
+import { ADSENSE_CLIENT } from "./AdConfig";
 
-/** Loads the provider script once, only when ads are enabled. */
+/** Next.js deduplicates the script across guide navigations. */
 export function AdScript() {
-  if (!adsEnabled() || AD_PROVIDER !== "adsense") return null;
   return (
     <Script
       id="adsense"

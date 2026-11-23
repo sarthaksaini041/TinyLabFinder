@@ -5,6 +5,7 @@ import { CATALOG, type ModelView } from "../lib/catalog";
 import { NEW_GUIDES } from "./guides-more";
 
 import { HOME_SERVER_GUIDES } from "./guides-home-server";
+import { OPERATIONS_GUIDES } from "./guides-operations";
 
 export const GUIDE_CATEGORIES = {
   buying: "Buying & power",
@@ -34,7 +35,7 @@ export const GUIDES: Guide[] = [
     description: "Intel Quick Sync and AMD VCN capabilities by generation, and what they mean for 4K HEVC, HDR and AV1 files on a used mini PC media server.",
     updated: "2026-09-25",
     models: (m) => m.vendor === "Intel",
-    related: [{ href: "/best/best-mini-pc-for-plex-4k", label: "Best used mini PCs for Plex 4K" }, { href: "/best/mini-pcs-with-av1-decode", label: "Mini PCs with AV1 decode" }, { href: "/?media=av1", label: "Filter the finder for AV1 decode" }],
+    related: [{ href: "/guides/jellyfin-direct-play-vs-transcoding", label: "Diagnose Direct Play and transcoding in Jellyfin" }, { href: "/best/best-mini-pc-for-plex-4k", label: "Best used mini PCs for Plex 4K" }, { href: "/best/mini-pcs-with-av1-decode", label: "Mini PCs with AV1 decode" }, { href: "/?media=av1", label: "Filter the finder for AV1 decode" }],
     body: () => (
       <>
         <p>
@@ -108,6 +109,7 @@ export const GUIDES: Guide[] = [
       </>
     ),
   },
+  ...OPERATIONS_GUIDES,
   ...HOME_SERVER_GUIDES,
   ...NEW_GUIDES,
 ];

@@ -151,12 +151,10 @@ input[type="email"], input[type="number"], input[type="text"], input[type="passw
 .compare-tray .btn { min-height: 36px; }
 
 /* ads: always separated and labelled, space reserved to avoid layout shift */
-.ad { margin: 24px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 8px 0 12px; }
+.ad { max-width: 760px; margin: 40px 0 24px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 8px 0 12px; }
 .ad__label { display: block; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.ad__body { min-height: var(--ad-min-m); }
-@media (min-width: 1000px) { .ad__body { min-height: var(--ad-min-d); } }
-.ad--desktop { display: none; }
-@media (min-width: 1000px) { .ad--desktop { display: block; position: sticky; top: 12px; } }
+.ad__body { min-height: 120px; }
+.ad:has(ins[data-ad-status="unfilled"]) { display: none; }
 .ad__placeholder { height: 100%; min-height: inherit; display: grid; place-items: center; background: repeating-linear-gradient(45deg, var(--tag), var(--tag) 8px, transparent 8px, transparent 16px); color: var(--muted); font-size: .8rem; border-radius: 4px; }
 
 .two-col { display: grid; gap: 16px; }
@@ -693,4 +691,24 @@ select option { background: var(--card); color: var(--ink); }
 }
 @media (max-width: 419px) {
   .finder-hero .btn-row { display: grid; }
+}
+
+.finder-search { margin-bottom: 14px; }
+.finder-search__controls { display: flex; align-items: center; gap: 8px; }
+.finder-search__controls input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+.finder-search__controls input::placeholder { color: var(--muted); }
+.finder-search__controls .btn { min-height: 44px; white-space: nowrap; }
+@media (max-width: 639px) {
+  .finder-search__controls { flex-wrap: wrap; }
+  .finder-search__controls input { flex-basis: 100%; }
 }

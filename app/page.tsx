@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AdSlot } from "../components/ads/AdSlot";
 import { Finder } from "../components/Finder";
 import { BRAND_COLLECTIONS } from "../data/brands";
 import { PUBLISHED_USE_CASES } from "../data/usecases";
@@ -76,7 +75,6 @@ export default async function Home() {
         </div>
         <Finder items={CATALOG} initialPrices={market.prices} initialImages={market.images} />
       </section>
-      <AdSlot placement="below-results" />
 
       <section className="collection-section" aria-labelledby="shortlist-heading">
         <h2 id="shortlist-heading">Browse by feature or workload</h2>

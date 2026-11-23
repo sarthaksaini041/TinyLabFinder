@@ -66,7 +66,6 @@ export default async function GuidePage({ params }: Props) {
       <div className="guide-layout">
         <article className="prose guide-body" aria-labelledby="guide-title">
           {guide.body()}
-          <AdSlot placement="in-content" />
         </article>
         <aside className="guide-sidebar">
           <nav className="panel guide-sidebar__links" aria-label="Related reading">
@@ -76,9 +75,9 @@ export default async function GuidePage({ params }: Props) {
               <li><Link href="/guides">All mini PC guides</Link></li>
             </ul>
           </nav>
-          <AdSlot placement="sidebar" />
         </aside>
       </div>
+      <AdSlot />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
     </>
   );
