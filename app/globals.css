@@ -54,8 +54,7 @@ code, .mono { font-family: var(--font-mono), ui-monospace, monospace; font-size:
 .site-header { border-bottom: 1px solid var(--rule); background: var(--card); }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 66px; flex-wrap: wrap; }
 .brand { font-weight: 700; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-.brand__mark { width: 26px; height: 18px; border: 2px solid var(--ink); border-radius: 3px; position: relative; }
-.brand__mark::after { content: ""; position: absolute; right: 3px; top: 5px; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+.brand__mark { display: block; flex: none; border-radius: 7px; }
 .nav { display: flex; gap: 4px 18px; flex-wrap: wrap; }
 .nav a { color: var(--ink); text-decoration: none; font-size: .95rem; padding: 6px 0; }
 .nav a:hover, .nav a[aria-current="page"] { color: var(--accent); }

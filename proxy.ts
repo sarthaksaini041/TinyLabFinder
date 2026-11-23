@@ -10,5 +10,5 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   // Skip build assets and metadata files; everything else is checked (it is a cheap string test).
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|sitemap.xml|ads.txt).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.png|robots.txt|sitemap.xml|ads.txt).*)"],
 };
